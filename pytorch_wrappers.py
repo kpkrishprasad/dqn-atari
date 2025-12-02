@@ -15,12 +15,13 @@ def make_atari_deepmind(env_id, max_episode_steps=None, scale_values=False, clip
     # Fix capitalization: Noframeskip -> NoFrameskip
     env_id = env_id.replace('Noframeskip', 'NoFrameskip')
     
-    if not env_id.startswith('ALE/'):
-        env_id = f'ALE/{env_id}'
-    if not env_id.endswith('-v5'):
-        env_id = env_id.replace('-v0', '-v5').replace('-v4', '-v5')
-        if not any(v in env_id for v in ['-v5', '-v4', '-v3', '-v2', '-v1', '-v0']):
-            env_id = f'{env_id}-v5'
+    # Force NoFrameskip version if not specified (required for DQN)
+    if 'NoFrameskip' not in env_id:
+        # Remove any version suffix and ALE/ prefix
+        base_name = env_id.split('-v')[0]
+        base_name = base_name.replace('ALE/', '')
+        # Add NoFrameskip and use v4 (which is the standard)
+        env_id = f'{base_name}NoFrameskip-v4'
     env = gym.make(env_id)
     env = NoopResetEnv(env, noop_max=30)
 
