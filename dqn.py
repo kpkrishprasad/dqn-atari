@@ -42,10 +42,10 @@ class Network(nn.Module):
         return action
     
 
-make_env = lambda: make_atari_deepmind('Breakout-v0')
-env = DummyVecEnv([make_env for _ in range(NUM_ENVS)])
+# make_env = lambda: make_atari_deepmind('Breakout-v0')
+# env = DummyVecEnv([make_env for _ in range(NUM_ENVS)])
 
-
+env = gym.make('CartPole-v1')
 
 replay_buffer = deque(maxlen = BUFFER_SIZE)
 rew_buffer = deque([0, 0], maxlen = 100)

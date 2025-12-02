@@ -48,11 +48,12 @@ class DummyVecEnv(VecEnv):
             # if isinstance(self.envs[e].action_space, spaces.Discrete):
             #    action = int(action)
 
-            obs, self.buf_rews[e], self.buf_dones[e], _, self.buf_infos[e] = self.envs[e].step(action)
+            obs, self.buf_rews[e], terminated, truncated, self.buf_infos[e] = self.envs[e].step(action)
+            self.buf_dones[e] = terminated or truncated
             if self.buf_dones[e]:
-                obs = self.envs[e].reset()
+                obs, _ = self.envs[e].reset()
             self._save_obs(e, obs)
-        return (self._obs_from_buf(), np.copy(self.buf_rews), np.copy(self.buf_dones), _,
+        return (self._obs_from_buf(), np.copy(self.buf_rews), np.copy(self.buf_dones), {},
                 self.buf_infos.copy())
 
     def reset(self):
@@ -72,10 +73,10 @@ class DummyVecEnv(VecEnv):
         return dict_to_obs(copy_obs_dict(self.buf_obs))
 
     def get_images(self):
-        return [env.render(mode='rgb_array') for env in self.envs]
+        return [env.render() for env in self.envs]
 
     def render(self, mode='human'):
         if self.num_envs == 1:
-            return self.envs[0].render(mode=mode)
+            return self.envs[0].render()
         else:
-            return super().render(mode=mode)
+            return super().render()
