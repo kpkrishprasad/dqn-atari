@@ -1,6 +1,6 @@
 __all__ = ['Monitor', 'get_monitor_files', 'load_results']
 
-from gym.core import Wrapper
+from gymnasium.core import Wrapper
 import time
 from glob import glob
 import csv
@@ -39,7 +39,12 @@ class Monitor(Wrapper):
             if v is None:
                 raise ValueError('Expected you to pass kwarg %s into reset'%k)
             self.current_reset_info[k] = v
-        return self.env.reset(**kwargs)
+        result = self.env.reset(**kwargs)
+        # Handle both old gym (returns obs) and new gymnasium (returns obs, info)
+        if isinstance(result, tuple):
+            return result
+        else:
+            return result, {}
 
     def reset_state(self):
         if not self.allow_early_resets and not self.needs_reset:

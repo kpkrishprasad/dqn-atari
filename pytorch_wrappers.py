@@ -2,6 +2,7 @@ from collections import deque
 
 import gymnasium as gym
 import numpy as np
+import ale_py  # Register ALE with gymnasium
 
 from baselines_wrappers import VecEnvWrapper
 from baselines_wrappers.atari_wrappers import NoopResetEnv, MaxAndSkipEnv, EpisodicLifeEnv, ScaledFloatFrame, \
@@ -10,6 +11,13 @@ from baselines_wrappers.wrappers import TimeLimit
 
 
 def make_atari_deepmind(env_id, max_episode_steps=None, scale_values=False, clip_rewards=True):
+    # Ensure proper gymnasium Atari environment ID format
+    if not env_id.startswith('ALE/'):
+        env_id = f'ALE/{env_id}'
+    if not env_id.endswith('-v5'):
+        env_id = env_id.replace('-v0', '-v5').replace('-v4', '-v5')
+        if not any(v in env_id for v in ['-v5', '-v4', '-v3', '-v2', '-v1', '-v0']):
+            env_id = f'{env_id}-v5'
     env = gym.make(env_id)
     env = NoopResetEnv(env, noop_max=30)
 
@@ -73,9 +81,12 @@ class BatchedPytorchFrameStack(VecEnvWrapper):
 
     def reset(self):
         obses = self.env.reset()
+        # Handle both tuple return (obses, info) and direct obses
+        if isinstance(obses, tuple):
+            obses, info = obses
         for _ in range(self.k):
-            for i, obs in enumerate(obses):
-                self.batch_stacks[i].append(obs.copy())
+            for i in range(self.env.num_envs):
+                self.batch_stacks[i].append(obses[i].copy())
         return self._get_ob()
 
     def step_wait(self):
