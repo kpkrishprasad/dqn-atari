@@ -26,9 +26,9 @@ EPSILON_DECAY = int(1e6)
 NUM_ENVS = 4
 TARGET_UPDATE_FREQ = 10000 // NUM_ENVS
 LR = 5e-5
-SAVE_PATH = './atari_model.pack'
+SAVE_PATH = './atari_model_double.pack'.format(LR)
 SAVE_INTERVAL = 10000  # Save every 10k steps
-LOG_DIR = './logs/atari_vanilla'
+LOG_DIR = './logs/atari_double' + str(LR)
 LOG_INTERVAL = 1000
 
 
@@ -61,12 +61,13 @@ def nature_cnn(observation_space, depths=(32, 64, 64), final_layer=512):
     return out
 
 class Network(nn.Module):
-    def __init__(self, env, device):
+    def __init__(self, env, device, double = True):
         super().__init__()
 
         self.num_actions = env.action_space.n
         self.device = device
-        
+        self.double = double
+
 
         conv_net = nature_cnn(env.observation_space)
 
@@ -120,9 +121,17 @@ class Network(nn.Module):
 
         # Compute Targets
         with torch.no_grad():
-            target_q_values = target_net(new_obses_t)
-            max_target_q_values = target_q_values.max(dim=1, keepdim=True)[0]
-            targets = rews_t + GAMMA * (1 - dones_t) * max_target_q_values
+            if self.double:
+                target_online_q_values = self(new_obses_t)
+                targets_online_best_q_indices = target_online_q_values.argmax(dim=1, keepdim=True)
+                targets_target_q_values = target_net(new_obses_t)
+                targets_selected_q_values = torch.gather(input=targets_target_q_values, dim=1, index=targets_online_best_q_indices)
+                targets = rews_t + GAMMA * (1 - dones_t) * targets_selected_q_values
+            else:
+                target_q_values = target_net(new_obses_t)
+                max_target_q_values = target_q_values.max(dim=1, keepdim=True)[0]
+
+                targets = rews_t + GAMMA * (1 - dones_t) * max_target_q_values
 
         # Compute Loss
         q_values = self(obses_t)
