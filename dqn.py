@@ -23,9 +23,9 @@ MIN_REPLAY_SIZE = 50000
 EPSILON_START = 1.0
 EPSILON_END = 0.1
 EPSILON_DECAY = int(1e6)
-TARGET_UPDATE_FREQ = 10000
 NUM_ENVS = 4
-LR = 2.5e-4
+TARGET_UPDATE_FREQ = 10000 / NUM_ENVS
+LR = 5e-5
 SAVE_PATH = './atari_model.pack'
 SAVE_INTERVAL = 10000  # Save every 10k steps
 LOG_DIR = './logs/atari_vanilla'
@@ -119,9 +119,10 @@ class Network(nn.Module):
         new_obses_t = torch.as_tensor(new_obses, dtype=torch.float32, device= self.device)
 
         # Compute Targets
-        target_q_values = target_net(new_obses_t)
-        max_target_q_values = target_q_values.max(dim=1, keepdim=True)[0]
-        targets = rews_t + GAMMA * (1 - dones_t) * max_target_q_values
+        with torch.no_grad():
+            target_q_values = target_net(new_obses_t)
+            max_target_q_values = target_q_values.max(dim=1, keepdim=True)[0]
+            targets = rews_t + GAMMA * (1 - dones_t) * max_target_q_values
 
         # Compute Loss
         q_values = self(obses_t)
@@ -155,7 +156,7 @@ if __name__ == "__main__":
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
     
-    make_env = lambda: Monitor(make_atari_deepmind('Breakout-v0'), filename=None, allow_early_resets=True)
+    make_env = lambda: Monitor(make_atari_deepmind('Breakout', scale_values=True), filename=None, allow_early_resets=True)
     vec_env = DummyVecEnv([make_env for _ in range(NUM_ENVS)])
     #env = SubprocVecEnv([make_env for _ in range(NUM_ENVS)])
     

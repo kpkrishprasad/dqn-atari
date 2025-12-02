@@ -12,6 +12,9 @@ from baselines_wrappers.wrappers import TimeLimit
 
 def make_atari_deepmind(env_id, max_episode_steps=None, scale_values=False, clip_rewards=True):
     # Ensure proper gymnasium Atari environment ID format
+    # Fix capitalization: Noframeskip -> NoFrameskip
+    env_id = env_id.replace('Noframeskip', 'NoFrameskip')
+    
     if not env_id.startswith('ALE/'):
         env_id = f'ALE/{env_id}'
     if not env_id.endswith('-v5'):
