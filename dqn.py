@@ -5,6 +5,8 @@ from collections import deque
 import itertools
 import numpy as np
 import random
+from pytorch_wrappers import make_atari_deepmind
+from baselines_wrappers import DummyVecEnv, VecEnv
 
 
 GAMMA = 0.99
@@ -15,6 +17,7 @@ EPSILON_START = 1.0
 EPSILON_END = 0.02
 EPSILON_DECAY = 10000
 TARGET_UPDATE_FREQ = 1000
+NUM_ENVS = 4
 
 class Network(nn.Module):
     def __init__(self, env):
@@ -39,11 +42,11 @@ class Network(nn.Module):
         return action
     
 
+make_env = lambda: make_atari_deepmind('Breakout-v0')
+env = DummyVecEnv([make_env for _ in range(NUM_ENVS)])
 
 
 
-
-env = gym.make('CartPole-v1')
 replay_buffer = deque(maxlen = BUFFER_SIZE)
 rew_buffer = deque([0, 0], maxlen = 100)
 
