@@ -4,7 +4,7 @@ import itertools
 from baselines_wrappers import DummyVecEnv
 from dqn import Network
 
-SAVE_PATH = './models/FishingDerby_double0_1.pack'  # Path to the saved model
+SAVE_PATH = 'models/FishingDerby_double_2.pack'  # Path to the saved model
 from pytorch_wrappers import make_atari_deepmind, BatchedPytorchFrameStack, PytorchLazyFrames
 import time
 

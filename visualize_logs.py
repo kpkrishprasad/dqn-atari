@@ -3,7 +3,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import os
 
 # Path to the newest log file
-log_file = "logs/events.out.tfevents.1764711310.mvasandani-2368404.293.1"
+log_file = "/Users/michaelvasandani/Documents/dqn-atari/logs/fish/events.out.tfevents.1765014338.mvasandani-821612.623.0"
 
 # Load the TensorBoard event file
 event_acc = EventAccumulator(log_file)
