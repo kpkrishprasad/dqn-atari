@@ -406,11 +406,11 @@ if __name__ == "__main__":
             summary_writer.add_scalar('Episodes', episode_count, global_step=step)
 
         # Checkpoint (for resume)
-        if step % CHECKPOINT_INTERVAL == 0 and step != 0:
-            save_checkpoint(
-                step, online_net, target_net, optimizer,
-                replay_buffer, epinfos_buffer, episode_count
-            )
+        # if step % CHECKPOINT_INTERVAL == 0 and step != 0:
+        #     save_checkpoint(
+        #         step, online_net, target_net, optimizer,
+        #         replay_buffer, epinfos_buffer, episode_count
+        #     )
 
         # Homework-style param save
         if step % SAVE_INTERVAL == 0 and step != 0:
