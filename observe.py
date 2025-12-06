@@ -2,7 +2,9 @@ import numpy as np
 import torch
 import itertools
 from baselines_wrappers import DummyVecEnv
-from dqn import Network, SAVE_PATH
+from dqn import Network
+
+SAVE_PATH = './models/FishingDerby_double0_1.pack'  # Path to the saved model
 from pytorch_wrappers import make_atari_deepmind, BatchedPytorchFrameStack, PytorchLazyFrames
 import time
 
@@ -14,7 +16,7 @@ from baselines_wrappers.atari_wrappers import NoopResetEnv, MaxAndSkipEnv, Episo
 from pytorch_wrappers import TransposeImageObs
 
 def make_env_render():
-    env = gym.make('ALE/Breakout-v5', render_mode='human')
+    env = gym.make('FishingDerby', render_mode='human')
     env = NoopResetEnv(env, noop_max=30)
     env = MaxAndSkipEnv(env, skip=4)
     env = EpisodicLifeEnv(env)
