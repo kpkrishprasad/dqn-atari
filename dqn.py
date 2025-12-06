@@ -30,14 +30,14 @@ GAMMA = 0.99
 BATCH_SIZE = 32
 
 # Replay buffer
-BUFFER_SIZE = 1_000_000      # can be large; checkpoints will be big
-MIN_REPLAY_SIZE = 50_000     # warmup transitions before training
+BUFFER_SIZE = 200_000      # can be large; checkpoints will be big
+MIN_REPLAY_SIZE = 20_000     # warmup transitions before training
 
 EPSILON_START = 1.0
 EPSILON_END = 0.1
 EPSILON_DECAY = int(1e6)
 
-NUM_ENVS = 4
+NUM_ENVS = 2
 TARGET_UPDATE_FREQ = 10000 // NUM_ENVS
 LR = 5e-5
 
@@ -57,13 +57,13 @@ os.makedirs(LOG_ROOT, exist_ok=True)
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
 SAVE_PATH = os.path.join(MODELS_DIR, f"{RUN_NAME}.pack")
-SAVE_INTERVAL = 10_000  # Save model params every 10k steps
+SAVE_INTERVAL = 50_000  # Save model params every 50k steps
 
 LOG_DIR = os.path.join(LOG_ROOT, f"{RUN_NAME}_lr{LR}")
 LOG_INTERVAL = 1_000
 
 CHECKPOINT_PATH = os.path.join(CHECKPOINT_DIR, f"{RUN_NAME}_checkpoint.pt")
-CHECKPOINT_INTERVAL = 10_000  # Save resume checkpoint every 10k steps
+CHECKPOINT_INTERVAL = 50_000  # Save resume checkpoint every 10k steps
 
 
 # ============================
