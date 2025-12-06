@@ -21,7 +21,7 @@ msgpack_numpy_patch()
 # ============================
 
 # Which Atari game to train on
-ENV_ID = "FishingDerby"     # e.g. "Breakout", "FishingDerby", etc.
+ENV_ID = "Breakout"     # e.g. "Breakout", "FishingDerby", etc.
 
 # Double DQN or vanilla DQN
 DOUBLE_DQN = True          # False = normal DQN, True = Double DQN
