@@ -42,7 +42,7 @@ TARGET_UPDATE_FREQ = 10000 // NUM_ENVS
 LR = 5e-5
 
 # Training length
-TOTAL_STEPS = 5_000_000
+TOTAL_STEPS = 1_000_000
 
 # Naming based on env + algorithm type
 RUN_NAME = f"{ENV_ID}_double{int(DOUBLE_DQN)}"
