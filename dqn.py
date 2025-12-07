@@ -48,8 +48,8 @@ TOTAL_STEPS = 1_000_000
 RUN_NAME = f"{ENV_ID}_double{int(DOUBLE_DQN)}"
 
 # Paths
-MODELS_DIR = "./modelsfishnew"
-LOG_ROOT = "./logsfishnew"
+MODELS_DIR = "./modelsbreaknew/"
+LOG_ROOT = "./logsbreaknew"
 CHECKPOINT_DIR = "./checkpointsfishnew"
 
 os.makedirs(MODELS_DIR, exist_ok=True)
