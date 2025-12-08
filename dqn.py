@@ -18,7 +18,7 @@ msgpack_numpy_patch()
 
 GAMMA = 0.99
 BATCH_SIZE = 32
-BUFFER_SIZE = int(1e6)
+BUFFER_SIZE = int(2e5)
 MIN_REPLAY_SIZE = 50000
 EPSILON_START = 1.0
 EPSILON_END = 0.1
@@ -27,9 +27,11 @@ NUM_ENVS = 4
 TARGET_UPDATE_FREQ = 10000 // NUM_ENVS
 LR = 5e-5
 SAVE_PATH = './atari_model.pack'
+CHECKPOINT_PATH = './checkpoint.pt'
 SAVE_INTERVAL = 10000  # Save every 10k steps
 LOG_DIR = './logs/atari_vanilla'
 LOG_INTERVAL = 1000
+RESUME_TRAINING = True  # Set to True to resume from checkpoint
 
 
 
@@ -181,6 +183,18 @@ if __name__ == "__main__":
     
     optimizer = torch.optim.Adam(online_net.parameters(), lr = LR)
     
+    # Try to resume from checkpoint
+    start_step = 0
+    if RESUME_TRAINING and os.path.exists(CHECKPOINT_PATH):
+        print(f'Loading checkpoint from {CHECKPOINT_PATH}...')
+        checkpoint = torch.load(CHECKPOINT_PATH)
+        online_net.load_state_dict(checkpoint['online_net'])
+        target_net.load_state_dict(checkpoint['target_net'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        start_step = checkpoint['step']
+        episode_count = checkpoint['episode_count']
+        print(f'Resumed from step {start_step}, episode {episode_count}')
+    
     #Replay Buffer
     obses = env.reset()
     for _ in range(MIN_REPLAY_SIZE):
@@ -196,7 +210,7 @@ if __name__ == "__main__":
     #Main Training Loop
     obses = env.reset()
     
-    for step in itertools.count():
+    for step in itertools.count(start=start_step):
         epsilon = np.interp(step, [0, EPSILON_DECAY], [EPSILON_START, EPSILON_END])
         rnd_sample = random.random()
         
@@ -248,6 +262,15 @@ if __name__ == "__main__":
         if step % SAVE_INTERVAL == 0 and step != 0:
             print('Saving ...')
             online_net.save(SAVE_PATH)
+            # Save checkpoint
+            torch.save({
+                'step': step,
+                'online_net': online_net.state_dict(),
+                'target_net': target_net.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'episode_count': episode_count
+            }, CHECKPOINT_PATH)
+            print(f'Checkpoint saved at step {step}')
     
         
     
