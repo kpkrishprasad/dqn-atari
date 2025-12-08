@@ -12,7 +12,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('device:', device)
 
 import gymnasium as gym
-from baselines_wrappers.atari_wrappers import NoopResetEnv, MaxAndSkipEnv, EpisodicLifeEnv, WarpFrame, ClipRewardEnv
+from baselines_wrappers.atari_wrappers import NoopResetEnv, MaxAndSkipEnv, EpisodicLifeEnv, WarpFrame, ClipRewardEnv, ScaledFloatFrame
 from pytorch_wrappers import TransposeImageObs
 
 def make_env_render():
@@ -21,6 +21,7 @@ def make_env_render():
     env = MaxAndSkipEnv(env, skip=4)
     env = EpisodicLifeEnv(env)
     env = WarpFrame(env)
+    env = ScaledFloatFrame(env)  # IMPORTANT: Scale values to match training!
     env = ClipRewardEnv(env)
     env = TransposeImageObs(env, op=[2, 0, 1])  # Convert to torch order (C, H, W)
     return env
