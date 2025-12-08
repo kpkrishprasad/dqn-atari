@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import itertools
 from baselines_wrappers import DummyVecEnv
-from dqn import Network
+from ddqn import Network
 
 SAVE_PATH = 'models/FishingDerby_double_2.pack'  # Path to the saved model
 from pytorch_wrappers import make_atari_deepmind, BatchedPytorchFrameStack, PytorchLazyFrames

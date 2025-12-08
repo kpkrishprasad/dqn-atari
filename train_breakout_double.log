@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/michaelvasandani/Documents/dqn-atari/dqn.py", line 9, in <module>
+    from pytorch_wrappers import make_atari_deepmind, BatchedPytorchFrameStack, PytorchLazyFrames
+  File "/Users/michaelvasandani/Documents/dqn-atari/pytorch_wrappers.py", line 5, in <module>
+    import ale_py  # Register ALE with gymnasium
+    ^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'ale_py'
