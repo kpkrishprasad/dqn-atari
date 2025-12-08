@@ -2,9 +2,9 @@
 
 # Transfer DQN project to AWS EC2 instance
 
-KEY_FILE=~/.ssh/ask-hammerspace.pem
+KEY_FILE=~/.ssh/your-key.pem
 EC2_USER=ec2-user
-EC2_IP=18.118.222.12
+EC2_IP=YOUR_EC2_IP
 REMOTE_DIR=/home/ec2-user/dqn-atari
 
 echo "Creating remote directory..."
